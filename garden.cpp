@@ -25,14 +25,21 @@ int main(int args, char* argv[])
     int tmpint;
     double tmpdbl;
     string seedg;
-    if(args==1)//no arguments
+
+    string dir, gfolder, tmpStr;
+
+    if(args==2)//no arguments
     {
         cout << "Please enter seed graph: ";
-        cin >> seedg;          
+	cin >> seedg;
+
+	cout << "Please enter destination directory: ";
+	cin >> dir;
     }
     else
     {
         seedg = argv[1];
+	dir = argv[2];
     }
     
     m3sgraph g,g1;
@@ -48,10 +55,11 @@ int main(int args, char* argv[])
     bool doAlter = true;     
     
     //make graph directory
-    string dir, gfolder, tmpStr;
-    cout << "Please enter destination directory: ";
-    cin >> dir;
     
+    dir = "garden/" + dir;
+    tmpStr = "mkdir garden";
+    system(tmpStr.c_str());
+
     //create or append processed graph list
     fstream file;
     string filename;

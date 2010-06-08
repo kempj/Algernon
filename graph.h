@@ -83,7 +83,7 @@ m3sgraph::m3sgraph()
 	neghborlistIsUpdated = false;
 }
 m3sgraph::~m3sgraph()
-{return;//***************************************************
+{return;//***************************************************//what?
 	if(graph != NULL)
 		delete[] graph;
 }
