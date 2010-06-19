@@ -6,7 +6,7 @@
 #include <algorithm>
 #include "graph.h"
 
-#define SIZE_LIMIT 1000
+#define SIZE_LIMIT 75
 
 /*
 

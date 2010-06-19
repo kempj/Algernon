@@ -128,7 +128,7 @@ int main()
 	vector<double> required_changes;
 	
 	
-	string garden = "Garden/";
+	string garden = "garden/";
 	string list = "list00.pgl";
 	
 	string tmpStr1, tmpStr2, tmpStr3;

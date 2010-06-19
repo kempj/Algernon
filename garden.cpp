@@ -28,7 +28,7 @@ int main(int args, char* argv[])
 
     string dir, gfolder, tmpStr;
 
-    if(args==2)//no arguments
+    if(args==1)//no arguments
     {
         cout << "Please enter seed graph: ";
 	cin >> seedg;
@@ -41,7 +41,7 @@ int main(int args, char* argv[])
         seedg = argv[1];
 	dir = argv[2];
     }
-    
+
     m3sgraph g,g1;
     InvariantLib ilib;
     AlterationLib alib;
@@ -138,14 +138,14 @@ int main(int args, char* argv[])
     file.close();
 
     int alteration_count = 0;
-
     for(int acurrent=0; acurrent<acount; acurrent++) //acurrent: current alteration
     {
         filename = dir + "" + graph_number_name + "/" + alib.GetAlterationName(acurrent)+ ".gar"; //graph alteration record
         file.open(filename.c_str(), ios::out);
+	//altercount = 0;
 
         while(doAlter)
-        {
+	{
             alib.DoAlteration(acurrent,g,g1,aargs[0],aargs[1],aargs[2],aargs[3],NULL);
             if(g==g1)//alteration failed
             {
@@ -189,7 +189,7 @@ int main(int args, char* argv[])
         file.open(filename.c_str(),ios::app|ios::out);
         file << alib.GetAlterationName(acurrent) << " ";
         for(int icurrent=0; icurrent<icount;icurrent++)
-        {
+	{
 	    file << ichanges[icurrent]/alteration_count << " ";
 	    ichanges[icurrent] = 0;
         }
