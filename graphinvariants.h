@@ -11,9 +11,106 @@
 // Add additional Invariants here
 //********************************************
 
+
+double MaxDegree(m3sgraph &g, void* arg)
+{
+    g.PopulateNeighborlist();
+    std::vector<NeighborData*>* neighbors = g.GetNeighborListing();
+    double max = 0;
+    double tmp = 0;
+    for(int i=g.GetSize()-1; i>=0; i--)
+    {
+	 tmp =(*neighbors)[i]->neighbors;
+	 if(tmp >= max)
+	 {
+	     max = tmp;
+	 }
+    }
+	return double(max);
+    //return double(0);
+}
+
+double MinDegree(m3sgraph &g, void* arg)
+{
+    g.PopulateNeighborlist();
+    std::vector<NeighborData*>* neighbors = g.GetNeighborListing();
+    double min = 0;
+    double tmp = 0;
+    tmp =(*neighbors)[0]->neighbors;
+    min = tmp;
+    for(int i=1; i < g.GetSize(); i++)
+    {
+	 if(tmp <= min)
+	 {
+	     min = tmp;
+	 }
+	 tmp =(*neighbors)[i]->neighbors;
+    }
+	return double(min);
+    //return double(0);
+}
+
 double Size(m3sgraph &g, void* arg)
-{       
+{
 	return double(g.GetSize());
+}
+
+double UpperMedian(m3sgraph &g, void* arg)
+{
+    //This gives me a list(vector) of the degrees:
+    g.PopulateNeighborlist();
+    std::vector<NeighborData*>* neighbors = g.GetNeighborListing();
+    //This is the upper median:
+    return double((*neighbors)[ceil(double(g.GetSize() / 2.0))]->neighbors);
+
+}
+
+double NumMaxDegree(m3sgraph &g, void* arg)
+{
+    g.PopulateNeighborlist();
+    std::vector<NeighborData*>* neighbors = g.GetNeighborListing();
+
+    double MaxVal = 0;
+    int NumMax = 0;
+    //MaxVal = InvariantLib::GetInvariant("MaxDegree",g);
+
+    for(int i=0; i < g.GetSize(); i++)
+    {
+	if(MaxVal < (*neighbors)[i]->neighbors)
+	{
+	    MaxVal = (*neighbors)[i]->neighbors;
+	    NumMax = 1;
+	}
+	else if(MaxVal == (*neighbors)[i]->neighbors)
+	{
+	    NumMax++;
+	}
+    }
+    return double(NumMax);
+}
+
+double NumMinDegree(m3sgraph &g, void* arg)
+{
+    g.PopulateNeighborlist();
+    std::vector<NeighborData*>* neighbors = g.GetNeighborListing();
+
+    double MinVal = 0;
+    int NumMin = 0;
+    MinVal = (*neighbors)[0]->neighbors;
+
+    for(int i=1; i < g.GetSize(); i++)
+    {
+	if(MinVal > (*neighbors)[i]->neighbors)
+	{
+	    MinVal = (*neighbors)[i]->neighbors;
+	    NumMin = 1;
+	}
+	else if(MinVal == (*neighbors)[i]->neighbors)
+	{
+	    NumMin++;
+	}
+    }
+    return double(NumMin);
 }
 
 
@@ -30,7 +127,6 @@ double EdgeCount(m3sgraph &g, void* arg)
 
 	return double(sum);
 }
-
 
 double HavelHakimiResidue(m3sgraph &g, void* arg)
 {
@@ -51,6 +147,7 @@ double HavelHakimiResidue(m3sgraph &g, void* arg)
  
        return double(seq.size());
 }
+
 double TotalDomination(m3sgraph &g, void* arg)
 {
        Graph tmpg;
@@ -73,6 +170,86 @@ double TotalDomination(m3sgraph &g, void* arg)
        }
        return double(TotalDomination(tmpg));
 }
+
+double Dom1(m3sgraph &g, void* arg)
+{
+    //int k_dom;// = *(int*)arg;
+    //k should be passed, but if it is not, defaulting to 2_domination
+    //if(k_dom == NULL)
+    int k_dom = 1;
+
+    //copied from the TotalDomination
+    Graph tmpg;
+    tmpg.n = g.GetSize();
+    tmpg.adj = new int*[tmpg.n];
+    for(int i=0; i<tmpg.n;i++)
+    {
+	tmpg.adj[i] = new int[tmpg.n];
+	for(int j=0; j<tmpg.n; j++)
+	{
+	    if(g.GetEdge(i,j))
+	    {
+		tmpg.adj[i][j] = 1;
+	    }
+	    else
+	    {
+		tmpg.adj[i][j] = 0;
+	    }
+	}
+    }
+    return double(k_Domination(k_dom,tmpg));
+}
+
+double Dom2(m3sgraph &g, void* arg)
+{
+    int k_dom = 2;
+    //copied from the TotalDomination
+    Graph tmpg;
+    tmpg.n = g.GetSize();
+    tmpg.adj = new int*[tmpg.n];
+    for(int i=0; i<tmpg.n;i++)
+    {
+	tmpg.adj[i] = new int[tmpg.n];
+	for(int j=0; j<tmpg.n; j++)
+	{
+	    if(g.GetEdge(i,j))
+	    {
+		tmpg.adj[i][j] = 1;
+	    }
+	    else
+	    {
+		tmpg.adj[i][j] = 0;
+	    }
+	}
+    }
+    return double(k_Domination(k_dom,tmpg));
+}
+
+double Dom3(m3sgraph &g, void* arg)
+{
+    int k_dom = 3;
+    //copied from the TotalDomination
+    Graph tmpg;
+    tmpg.n = g.GetSize();
+    tmpg.adj = new int*[tmpg.n];
+    for(int i=0; i<tmpg.n;i++)
+    {
+	tmpg.adj[i] = new int[tmpg.n];
+	for(int j=0; j<tmpg.n; j++)
+	{
+	    if(g.GetEdge(i,j))
+	    {
+		tmpg.adj[i][j] = 1;
+	    }
+	    else
+	    {
+		tmpg.adj[i][j] = 0;
+	    }
+	}
+    }
+    return double(k_Domination(k_dom,tmpg));
+}
+
 double CaroWei (m3sgraph &g, void* arg)
 {
     g.PopulateNeighborlist();
@@ -182,11 +359,11 @@ InvariantLib::InvariantLib()
 {
 	InvariantDef tmp;
 	
-	tmp.name = "Size";
+	tmp.name = "Degree";
 	tmp.ptr = Size;
 	list.push_back(tmp);
 
-	tmp.name = "EdgeCount";
+	tmp.name = "Size";
 	tmp.ptr = EdgeCount;
 	list.push_back(tmp);
 	
@@ -209,7 +386,38 @@ InvariantLib::InvariantLib()
 	tmp.name = "HavelHakimiResidue";
 	tmp.ptr = HavelHakimiResidue;
 	list.push_back(tmp);
+
+	tmp.name = "MaxDegree";
+	tmp.ptr = MaxDegree;
+	list.push_back(tmp);
+
+	tmp.name = "MinDegree";
+	tmp.ptr = MinDegree;
+	list.push_back(tmp);
+
+	tmp.name = "NumMaxDegree";
+	tmp.ptr = NumMaxDegree;
+	list.push_back(tmp);
+
+	tmp.name = "NumMinDegree";
+	tmp.ptr = NumMinDegree;
+	list.push_back(tmp);
 	
+	tmp.name = "UpperMedian";
+	tmp.ptr = UpperMedian;
+	list.push_back(tmp);
+
+	tmp.name = "Dom1";
+	tmp.ptr = Dom1;
+	list.push_back(tmp);
+
+	tmp.name = "Dom2";
+	tmp.ptr = Dom2;
+	list.push_back(tmp);
+
+	tmp.name = "Dom3";
+	tmp.ptr = Dom3;
+	list.push_back(tmp);
 }
 
 #endif

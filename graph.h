@@ -83,7 +83,7 @@ m3sgraph::m3sgraph()
 	neghborlistIsUpdated = false;
 }
 m3sgraph::~m3sgraph()
-{return;//***************************************************//what?
+{return;//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~what?~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	if(graph != NULL)
 		delete[] graph;
 }
@@ -487,6 +487,7 @@ long long unsigned int m3sgraph::GetSize()
 	return size;
 }
 
+//Draws Adjacency Matrix
 void m3sgraph::Draw(std::ostream& out)
 {
 	for(long long unsigned int j=0; j<size; j++)
@@ -519,30 +520,30 @@ void m3sgraph::PopulateNeighborlist()
 
 
 bool NeighborData::GetInfo (int i, m3sgraph& g)
-    {
-      index = i;
-      int size = g.GetSize();
+{
+    index = i;
+    int size = g.GetSize();
 
-      int* tmp = new int [size-1];
-      neighbors=0; //neighbor count
-      for(int n=0; n<size; n++)
-      {
-			if(g.GetEdge(i,n))
-			{
-			  tmp[neighbors] = n;
-			  neighbors++;
-			}
-      }
-      if(list!=NULL)
-			delete[] list;
-      list = new int[neighbors];
-      for(int n=0; n<neighbors; n++)
-      {
-			list[n]=tmp[n];
-      }
-      delete[] tmp;
-	return true;
-    } 
+    int* tmp = new int [size-1];
+    neighbors=0; //neighbor count
+    for(int n=0; n<size; n++)
+    {
+	if(g.GetEdge(i,n))
+	{
+	    tmp[neighbors] = n;
+	    neighbors++;
+	}
+    }
+    if(list!=NULL)
+	delete[] list;
+    list = new int[neighbors];
+    for(int n=0; n<neighbors; n++)
+    {
+	list[n]=tmp[n];
+    }
+    delete[] tmp;
+    return true;
+}
 
 
 

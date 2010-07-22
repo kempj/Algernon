@@ -40,11 +40,12 @@ void SpikeHighest (m3sgraph &g, m3sgraph &ng,
 
     //Testing to make sure the inputs are sane
     //and limiting the length of spikes to 5
-    if(a>g.GetSize()||b>g.GetSize()||d>5)
+    //JK - replacing all of the 5s with 3s
+    if(a>g.GetSize()||b>g.GetSize()||d>3)
 	return;
-    if(g.GetSize()>=5 && c > g.GetSize())
+    if(g.GetSize()>=3 && c > g.GetSize())
 	return;
-    if(g.GetSize()<5 && c > 5)
+    if(g.GetSize()<3 && c > 3)
 	return;
 
     std::vector<long long unsigned int> seq = g.GetDegSeq();
@@ -137,11 +138,12 @@ void ClonesToHighest (m3sgraph &g, m3sgraph &ng,
 
     ng = g;
 
-    if(a>g.GetSize()||b>g.GetSize()||d>5)
+    //JK - replacing all of the 5s with 3s
+    if(a>g.GetSize()||b>g.GetSize()||d>3)
 	return;
-    if(g.GetSize()>=5 && c > g.GetSize())
+    if(g.GetSize()>=3 && c > g.GetSize())
 	return;
-    if(g.GetSize()<5 && c > 5)
+    if(g.GetSize()<3 && c > 3)
 	return;
 
     std::vector<long long unsigned int> seq = g.GetDegSeq();

@@ -142,16 +142,16 @@ int main(int args, char* argv[])
     {
         filename = dir + "" + graph_number_name + "/" + alib.GetAlterationName(acurrent)+ ".gar"; //graph alteration record
         file.open(filename.c_str(), ios::out);
+	{
+	    if(aargs[3]>1)
+	    {
+		 aargs[3] = 1;
 	//altercount = 0;
 
         while(doAlter)
 	{
             alib.DoAlteration(acurrent,g,g1,aargs[0],aargs[1],aargs[2],aargs[3],NULL);
-            if(g==g1)//alteration failed
-            {
-                if(aargs[3]>1)
-                {
-                     aargs[3] = 1;
+	    if(g==g1)//alteration failed
                      aargs[2]++;
                 }else if (aargs[2]>1)
                 {
@@ -169,6 +169,7 @@ int main(int args, char* argv[])
             else
             {
                 alteration_count++;
+		//this loop writes the changes in all of the invariants for use by Algernon
                 for(int icurrent=0; icurrent<icount;icurrent++)
                 {    
                      tmpDbl = ilib.GetInvariant(icurrent, g1, NULL);              
@@ -203,6 +204,6 @@ int main(int args, char* argv[])
 	    aargs[i] = 1;
     }
     
-    cin.get(); cin.get();
+    //cin.get(); cin.get();//Same as algernon, removed.
     return 0;
 }
