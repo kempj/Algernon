@@ -23,6 +23,89 @@ If any value is unreasonable, the graph should reamin unchanged. This will
 allow the program to discard bad choices.
 */
 
+
+void RemoveSpike (m3sgraph &g, m3sgraph &ng,
+		  long long unsigned int a,
+		  long long unsigned int b,
+		  long long unsigned int c,
+		  long long unsigned int d, void* arg)
+{
+    /*
+	a - Length of Spikes removed
+	b - Remove all Spikes 1 for no, 2 for yes
+	c - Number of Spikes To remove(if a is 1)
+	d - Unused
+	*/
+
+    ng = g;
+
+    //Testing to make sure the inputs are sane
+    if(b > 2)
+	return;
+    if(c > 5)
+	return;
+    if(a > 3)
+	return;
+    if(b == 2 && c > 1)
+	return;
+    if(d > 1)
+	return;
+
+    ng.PopulateNeighborlist();
+    std::vector<NeighborData*>* neighbors = ng.GetNeighborListing();
+    int spikeArray[a];
+    int indexOfLastVertex, j;
+    bool completeSpike = false;
+
+    for(int i = 0; i < ng.GetSize(); i++)
+    {
+	//this loop goes through all the vertices and the if statement
+	// selects all of the pendants.
+	if((*neighbors)[i]->neighbors == 1)
+	{
+	    indexOfLastVertex = i;
+	    //This loop traverses the graph as long as the degree is two, until
+	    // it reaches the spike length a.
+	    for(j = 0; j < a - 1; j++)
+	    {
+		spikeArray[j] = indexOfLastVertex;
+		//This if, elseif is needed so the program doesn't go back and forth between 2 vertices
+		// if the order of the elements in the list isn't consistent.
+		if((*neighbors)[indexOfLastVertex]->list[0] != indexOfLastVertex && (*neighbors)[(*neighbors)[indexOfLastVertex]->list[0]]->neighbors == 2)
+		{
+		    indexOfLastVertex = (*neighbors)[indexOfLastVertex]->list[0];
+		}
+		else if((*neighbors)[(*neighbors)[indexOfLastVertex]->list[1]]->neighbors == 2)
+		{
+		    indexOfLastVertex = (*neighbors)[indexOfLastVertex]->list[1];
+		}
+		else
+		{
+		    continue;
+		}
+		//if this if statement is entered, then a spike has been found
+		// and is going to be deleted
+		if(j == a-2)
+		{
+		    for(int k = 0; k < a-1; k++)
+		    {
+			ng.RemoveVertex(spikeArray[k]);
+		    }
+		}
+	    }
+	}
+    }
+
+//for 1:n, where n is spikelength
+    //check if degree of neighbor is 2
+//if vertex was a spike of length n, then delete all of the nodes traversed
+    // store the vertices in an array length n
+//
+//do this for every vertex.
+
+    return;
+}
+
 void SpikeHighest (m3sgraph &g, m3sgraph &ng,
 		   long long unsigned int a,
 		   long long unsigned int b,
@@ -117,6 +200,7 @@ void SpikeHighest (m3sgraph &g, m3sgraph &ng,
 
     return;
 }
+
 void ClonesToHighest (m3sgraph &g, m3sgraph &ng,
 		      long long unsigned int a,
 		      long long unsigned int b,
@@ -508,6 +592,9 @@ AlterationLib::AlterationLib()
     tmp.ptr = CliqueHighest;
     list.push_back(tmp);
 
+    tmp.name = "RemoveSpike";
+    tmp.ptr = RemoveSpike;
+    list.push_back(tmp);
 }
 
 #endif

@@ -55,9 +55,9 @@ void ClearScreen()
 
 int main()
 {
-    AlterationLib alib;
-    InvariantLib ilib;
-    vector<ExpressionClass> expr_list;
+    AlterationLib alib;/*!< The library containing all of the Alterations*/
+    InvariantLib ilib; /*!< The library containing all of the Invariants*/
+    vector<ExpressionClass> expr_list;/*!< A vector containing all of the expressions the user inputs*/
     m3sgraph coreg, newg, currentg, lastg;
     int tmpInt = 0;
     string tmpStr;
@@ -109,6 +109,7 @@ int main()
     }
     cout << "\n\n";
     
+    //This loop does the initial evaluation of the expression
     for(int i=0; i<expr_list.size(); i++)
     {
 	cout << "Expression #" << i <<":\n";
@@ -122,7 +123,7 @@ int main()
 	cout << endl;
     }
     
-    newg = coreg;//coreg is never used again, why have newg and coreg?
+    newg = coreg;//coreg is never used again, why have newg and coreg?*/
     currentg = newg;
     BuildShiftData(shift_data,expr_list,var_list);
     vector<double> required_changes;
@@ -148,13 +149,16 @@ int main()
     if(var_list.size()>garden_var_count)//not enough varaibles in garden
     {
 	cout << "Not enough invariant data avialable\n";
-	//cin.get();cin.get();//JK - again, why?
 	return 1;
     }
     tmpInt = 0;
+
+    //This loop compares every element in the garden data with every element of the invariant lib, storing
+    // the index
+    // Any that are in garden, but not in the lib have a -1 put in their place in the invariant map.
     for(int i=0; i<garden_var_count; i++)
     {
-	getline(file,tmpStr1);
+	getline(file,tmpStr1);//tmpStr1 is resued for a different purpose here(Invariant names).
 	for(tmpInt1=0; tmpInt1<var_list.size(); tmpInt1++)
 	{
 	    if(var_list[tmpInt1]->name==tmpStr1)
@@ -170,10 +174,10 @@ int main()
 	    cout << "Unused invariant: " << tmpStr1 << "\n";
 	}
     }
+
     if(var_list.size()>tmpInt)//not enough varaibles in garden
     {
 	cout << "Not enough relevant invariant data avialable\n";
-	cin.get();cin.get();
 	return 1;
     }
     
@@ -183,8 +187,11 @@ int main()
     double tmpDbl1;
     file >> tmpDbl1;
 
+    //This loop is not entered.
+    //This loop cycles through the pgl file creating a table of references to map
+    //changes, keeping track of how a change of one invariant effects the others?
 
-    while(file)
+    /*while(file)
     {
 	data_table.resize(data_table.size()+1);
 	data_table[data_table.size()-1].resize(garden_var_count);
@@ -193,9 +200,10 @@ int main()
 	{
 	    file >> data_table[data_table.size()-1][i];
 	}
+	//The following 2 lines in Garden are not written or being read.
 	file >> tmpStr2; //graph name (currently unused)
 	file >> tmpDbl1;
-    }
+    }*/
     file.close();
     file.clear();
 
@@ -203,8 +211,9 @@ int main()
     int hi_match = 0;
     double hi_score = 0;
     double tmp_score = 0;
+    int first_loop = 0;
 
-    //main while loop, alterations are done in here until an example is found
+    //main while loop, alterations are done in here until an result is found
     while(ExpressionsTruthValue(shift_data,expr_list,var_list,required_changes)>0)
     {
 	for(int i=0; i<expr_list.size(); i++)
@@ -213,6 +222,7 @@ int main()
 	    cout << "\nRHS: " <<  expr_list[i].EvaluateRHS() << endl;
 	}
 
+	/* Removed because it is not called.
 	//compare graph to exisitng profiles and pick best match
 	for(int i=0; i<data_table.size(); i++)
 	{
@@ -234,10 +244,12 @@ int main()
 		hi_match = i;
 		hi_score = tmp_score;
 	    }
-	}
+	}*/
+
 	//check profile for best matching change in required invariants
 	tmpStr1 = itos(hi_match);
 	string graph_number = tmpStr1;
+	//~~~~~~~~Reading in the GAP file~~~~~~~~~~~~
 	tmpStr3 = garden + lprefix + tmpStr1 +".gap";
 	file.open(tmpStr3.c_str(), ios::in);
 	hi_match = 0;
@@ -247,6 +259,7 @@ int main()
 	file >> tmpStr1; //consumes graph name
 	file >> tmpStr1; //gets first alteration method name
 
+	//This loop Scores the alterations for each invariant based on how it impacts the total expression
 	while(file)
 	{
 	    tmp_score=0;
@@ -261,8 +274,6 @@ int main()
 		    tmp_score-= (fabs(required_changes[invariant_map[i]])+fabs(tmpDbl1));
 		}
 		else if(fabs(required_changes[invariant_map[i]]-tmpDbl1)/required_changes[invariant_map[i]] >= BEST_CHANGE_TOLERANCE)
-		    /*if((tmpDbl1> BEST_CHANGE_TOLERANCE*required_changes[invariant_map[i]])&&
-					(tmpDbl1< (2-BEST_CHANGE_TOLERANCE)*required_changes[invariant_map[i]]))*/
 		{
 		    tmp_score+=tmpDbl1;
 		}
@@ -284,13 +295,14 @@ int main()
 		hi_score = tmp_score;
 		hi_match = alteration_names.size()-1;
 	    }
-	    file >> tmpStr1; //consumes graph name
+	    file >> tmpStr1; //Consumes Alteration Name
 	    count++;
 	}
 	file.close();
 	file.clear();
 	
 	string alteration = alteration_names[hi_match];
+	//~~~~~~~~~~~~~Reading in the gar file~~~~~~~~~~~~
 	tmpStr1 = garden + lprefix + graph_number + "/" + alteration + ".gar";
 	file.open(tmpStr1.c_str(), ios::in);
 
@@ -300,17 +312,13 @@ int main()
 	count = 0;
 	file >> tmpDbl1;
 	
+	//This loop determines the arguments for the Alteration?
 	while(file)
 	{
 	    tmp_score=0;
+
 	    if(invariant_map[0]!=-1)
 	    {
-		/*
-				if((tmpDbl1> BEST_ARG_TOLERANCE*required_changes[invariant_map[0]])&&
-						(tmpDbl1< (2-BEST_ARG_TOLERANCE)*required_changes[invariant_map[0]]))
-				{
-					tmp_score++;
-				}*/
 		if(required_changes[invariant_map[0]]*tmpDbl1 < 0)//different signs
 		{
 		    tmp_score-= (fabs(required_changes[invariant_map[0]])+fabs(tmpDbl1));
@@ -328,17 +336,9 @@ int main()
 		    tmp_score+=tmpDbl1;
 		}
 	    }
+
 	    for(int i=1; i<invariant_map.size(); i++)
 	    {
-		/*
-				file >> tmpDbl1;
-				if(invariant_map[i]==-1)
-					continue;
-				if((tmpDbl1> BEST_ARG_TOLERANCE*required_changes[invariant_map[i]])&&
-					(tmpDbl1< (2-BEST_ARG_TOLERANCE)*required_changes[invariant_map[i]]))
-				{
-					tmp_score++;
-				}*/
 		file >> tmpDbl1;
 		if(invariant_map[i]==-1)
 		    continue;
@@ -390,13 +390,20 @@ int main()
 	
 	newg = alib.DoAlteration(alteration,currentg,args[0],args[1],args[2],args[3]);
 
-
 	//~~~~~~ Actual Alteration:
 	cout << "Altered " << currentg.GetG6() << " using " << alteration << " obtaining " << newg.GetG6() << "\n";
 
+	//Termination Condition - Failure
+	if(first_loop != 0 && lastg == currentg && currentg == newg)
+	{
+	    cout << "\n\nGraphs Not Changing, Program Terminated\n";
+	    return 0;
+	}
 
-	//lastg = currentg;
+	first_loop = 1;
+	lastg = currentg;
 	currentg = newg;
+
 	PopulateVarList(var_list,ilib,currentg);
 
 	cout << "Base invariants for " << currentg.GetG6()<< ":\n";
@@ -410,8 +417,6 @@ int main()
     }
 
     cout << "Result: " << newg.GetG6() << endl;
-
-    //cin.get(); cin.get();//why is this here?
     return 0;
 }
 
@@ -592,7 +597,7 @@ int ExpressionsTruthValue(vector<vector<vector<vector<vector<double> > > > > &sh
     string tmpstr;
     int ans = 0;
     int side = 0;
-    
+
     for(int i=0; i<var_list.size(); i++)
     {
 	change_list.push_back(0);

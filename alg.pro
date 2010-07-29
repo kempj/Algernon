@@ -7,8 +7,9 @@ TARGET = alg
 CONFIG += console
 CONFIG -= app_bundle
 TEMPLATE = app
-SOURCES += algernon.cpp \
+SOURCES += algernon.cpp \ #\
     garden.cpp
+    #garden.cpp
 HEADERS += TD.h \
     graphtools.h \
     graphinvariants.h \

@@ -51,7 +51,7 @@ int main(int args, char* argv[])
     long long unsigned int aargs[4]; //alter. arguments
     for(int i=0; i<4; i++)
         aargs[i] = 1;
-        
+
     bool doAlter = true;     
     
     //make graph directory
@@ -119,14 +119,14 @@ int main(int args, char* argv[])
 
     for(int icurrent=0; icurrent<icount;icurrent++)
     {
-         ioriginals[icurrent] = ilib.GetInvariant(icurrent, g, NULL);  
-         ichanges[icurrent] = 0;
+	ioriginals[icurrent] = ilib.GetInvariant(icurrent, g, NULL);
+	ichanges[icurrent] = 0;
     }  
-   
+
     file.open(gfolder.c_str(),ios::app|ios::out);
     for(int icurrent=0; icurrent<icount;icurrent++)
     {
-         file << ioriginals[icurrent] << '\t';//output invariant values
+	file << ioriginals[icurrent] << '\t';//output invariant values
     }
     file << seedg << endl;//add graph name
     file.close();
@@ -141,44 +141,85 @@ int main(int args, char* argv[])
     for(int acurrent=0; acurrent<acount; acurrent++) //acurrent: current alteration
     {
         filename = dir + "" + graph_number_name + "/" + alib.GetAlterationName(acurrent)+ ".gar"; //graph alteration record
+	cout << "Starting Alteration in " << filename << endl;
         file.open(filename.c_str(), ios::out);
-	{
-	    if(aargs[3]>1)
-	    {
-		 aargs[3] = 1;
-	//altercount = 0;
 
-        while(doAlter)
+	while(doAlter)
 	{
-            alib.DoAlteration(acurrent,g,g1,aargs[0],aargs[1],aargs[2],aargs[3],NULL);
+
+	    alib.DoAlteration(acurrent,g,g1,aargs[0],aargs[1],aargs[2],aargs[3],NULL);
 	    if(g==g1)//alteration failed
-                     aargs[2]++;
-                }else if (aargs[2]>1)
-                {
-                     aargs[2] = 1;
-                     aargs[1]++;
-                }else if (aargs[1]>1)
-                {
-                     aargs[1] = 1;
-                     aargs[0]++;
-                }else
-                {
-                     doAlter = false;
-                } 
-            }
+	    {
+		if(aargs[3]>1)
+		{
+		    aargs[3] = 1;
+		    aargs[2]++;
+		}else if (aargs[2]>1)
+		{
+		    aargs[2] = 1;
+		    aargs[1]++;
+		}else if (aargs[1]>1)
+		{
+		    aargs[1] = 1;
+		    aargs[0]++;
+		}else
+		{
+		    doAlter = false;
+		}
+	    }
+//	{
+//	    if(aargs[3]>1)
+//	    {
+//		aargs[3] = 1;
+//		//altercount = 0;
+//		cout << "aargs[3] > 1\n";
+//		while(doAlter)
+//		{
+//		    cout << "doing alteration on " << g.GetG6();
+//		    alib.DoAlteration(acurrent,g,g1,aargs[0],aargs[1],aargs[2],aargs[3],NULL);
+//		    cout << "resulting in: " << g1.GetG6() << endl;
+//		    if(g==g1)//alteration failed
+//		    {
+//			if(aargs[3]>1)
+//			{
+//			    cout << "g==g1\n";
+//			    aargs[2]++;
+//			}
+//			else if (aargs[2]>1)
+//			{
+//			    cout << "aargs[2]>1\n";
+//			    aargs[2] = 1;
+//			    aargs[1]++;
+//			}
+//			else if (aargs[1]>1)
+//			{
+//			    cout << "aargs[1]>1\n";
+//			    aargs[1] = 1;
+//			    aargs[0]++;
+//			}
+//			else
+//			{
+//			    cout << "else\n";
+//			    doAlter = false;
+//			}
+//		    }
+//		}
+//            }
             else
             {
+
+
                 alteration_count++;
 		//this loop writes the changes in all of the invariants for use by Algernon
                 for(int icurrent=0; icurrent<icount;icurrent++)
                 {    
-                     tmpDbl = ilib.GetInvariant(icurrent, g1, NULL);              
-                     file << tmpDbl - ioriginals[icurrent]<< " "; //or
-                     //file << tmpDbl << " "; 
-                     ichanges[icurrent]+= tmpDbl - ioriginals[icurrent];
-                }              
+		    tmpDbl = ilib.GetInvariant(icurrent, g1, NULL);
+		    file << tmpDbl - ioriginals[icurrent]<< " ";
+		    ichanges[icurrent]+= tmpDbl - ioriginals[icurrent];
+		}
+
                 for(int i=0; i<4; i++)
-			file << aargs[i] << " ";
+		    file << aargs[i] << " ";
 
 		file << g1.GetG6() << endl;
 		aargs[3]++; //increment last
@@ -203,7 +244,5 @@ int main(int args, char* argv[])
         for(int i=0; i<4; i++)
 	    aargs[i] = 1;
     }
-    
-    //cin.get(); cin.get();//Same as algernon, removed.
     return 0;
 }
