@@ -440,6 +440,7 @@ bool VerifyVarList(vector<Variable*>& varList, InvariantLib &ilib)
 {
     for(int i=0; i<varList.size(); i++)
     {
+	cout << varList[i]->name << endl;
 	if(ilib.GetIndex(varList[i]->name)==-1)
 	    return false;
     }

@@ -33,7 +33,7 @@ void RemoveSpike (m3sgraph &g, m3sgraph &ng,
     /*
 	a - Length of Spikes removed
 	b - Remove all Spikes 1 for no, 2 for yes
-	c - Number of Spikes To remove(if a is 1)
+	c - Number of Spikes To remove(if b is 1)
 	d - Unused
 	*/
 

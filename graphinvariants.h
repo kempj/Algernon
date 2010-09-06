@@ -362,11 +362,11 @@ InvariantLib::InvariantLib()
 {
     InvariantDef tmp;
 
-    tmp.name = "Degree";
+    tmp.name = "Size";
     tmp.ptr = Size;
     list.push_back(tmp);
 
-    tmp.name = "Size";
+    tmp.name = "Order";
     tmp.ptr = EdgeCount;
     list.push_back(tmp);
 
